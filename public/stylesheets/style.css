@@ -4819,7 +4819,8 @@ em {
 .alphabet {
   cursor: pointer;
   font-size: 22px;
-  text-align: center; }
+  text-align: center;
+  -webkit-padding-start: 0px; }
   .alphabet li {
     display: inline-block;
     padding-left: 5px;
@@ -4828,7 +4829,8 @@ em {
       color: #1d7cf4; }
 
 .genres {
-  cursor: pointer; }
+  cursor: pointer;
+  -webkit-padding-start: 0px; }
   .genres li {
     margin-right: 5px; }
     .genres li:active {
