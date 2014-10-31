@@ -11,6 +11,11 @@ var async = require('async');
 var request = require('request');
 var xml2js = require('xml2js');
 
+//Server-side Authentication
+var session = require('express-session');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
 
 
 var _ = require('lodash');
@@ -68,7 +73,22 @@ userSchema.methods.comparePassword = function(candidatePassword, cb) {
 var User = mongoose.model('User', userSchema);
 var Show = mongoose.model('Show', showSchema);
 
+passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, password, done) {
+  User.findOne({ email: email }, function(err, user) {
+    if (err) return done(err);
+    if (!user) return done(null, false);
+    user.comparePassword(password, function(err, isMatch) {
+      if (err) return done(err);
+      if (isMatch) return done(null, user);
+      return done(null, false);
+    });
+  });
+}));
+
 mongoose.connect('localhost');
+mongoose.connection.on('error', function(){
+  console.error('MongoDB Connection Error. Make sure MongoDB is running. Run mongod in a terminal window.');
+})
 
 var app = express();
 
@@ -77,6 +97,9 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+app.use(session({ secret: 'keyboard cat' }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/shows', function(req, res, next) {
