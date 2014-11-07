@@ -112,11 +112,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) next();
-  else res.send(401);
-}
-
 app.get('/api/shows', function(req, res, next) {
   var query = Show.find();
   if (req.query.genre) {
@@ -220,6 +215,11 @@ app.post('/api/shows', function(req, res, next) {
   });
 });
 
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) next();
+  else res.send(401);
+}
+
 app.post('/api/login', passport.authenticate('local'), function(req, res) {
   res.cookie('user', JSON.stringify(req.user));
   res.send(req.user);
@@ -256,7 +256,6 @@ app.use(function(err, req, res, next) {
   console.error(err.stack);
   res.send(500, { message: err.message });
 });
-
 app.listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
 })
