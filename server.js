@@ -73,6 +73,23 @@ userSchema.methods.comparePassword = function(candidatePassword, cb) {
 var User = mongoose.model('User', userSchema);
 var Show = mongoose.model('Show', showSchema);
 
+mongoose.connect('localhost');
+mongoose.connection.on('error', function(){
+  console.error('MongoDB Connection Error. Make sure MongoDB is running. Run mongod in a terminal window.');
+})
+
+var app = express();
+
+app.set('port', process.env.PORT || 3000);
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.static(path.join(__dirname, 'public')));
+
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
@@ -94,23 +111,6 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, function(email, passw
     });
   });
 }));
-
-mongoose.connect('localhost');
-mongoose.connection.on('error', function(){
-  console.error('MongoDB Connection Error. Make sure MongoDB is running. Run mongod in a terminal window.');
-})
-
-var app = express();
-
-app.set('port', process.env.PORT || 3000);
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
-app.use(cookieParser());
-app.use(session({ secret: 'keyboard cat' }));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/shows', function(req, res, next) {
   var query = Show.find();
@@ -219,6 +219,29 @@ function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) next();
   else res.send(401);
 }
+
+app.post('/api/subscribe', ensureAuthenticated, function(req, res, next) {
+  Show.findById(req.body.showId, function(err, show) {
+    if (err) return next(err);
+    show.subscribers.push(req.user.id);
+    show.save(function(err) {
+      if (err) return next(err);
+      res.send(200);
+    });
+  });
+});
+
+app.post('/api/unsubscribe', ensureAuthenticated, function(req, res, next) {
+  Show.findById(req.body.showId, function(err, show) {
+    if (err) return next(err);
+    var index = show.subscribers.indexOf(req.user.id);
+    show.subscribers.splice(index, 1);
+    show.save(function(err) {
+      if (err) return next(err);
+      res.send(200);
+    });
+  });
+});
 
 app.post('/api/login', passport.authenticate('local'), function(req, res) {
   res.cookie('user', JSON.stringify(req.user));
