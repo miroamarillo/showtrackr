@@ -3,4 +3,4 @@ angular.module('MyApp').
     return function(date) {
       return moment(date).fromNow();
     }
-});
+  });
