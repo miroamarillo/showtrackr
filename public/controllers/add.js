@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('AddCtrl', function($scope, $alert, Show) {
+  .controller('AddCtrl', [ '$scope', '$alert', 'Show', function($scope, $alert, Show) {
     $scope.addShow = function() {
       Show.save({ showName: $scope.showName }).$promise
         .then(function() {
@@ -23,4 +23,4 @@ angular.module('MyApp')
           });
         });
     };
-  });
+  }]);
