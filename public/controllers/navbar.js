@@ -1,6 +1,6 @@
 angular.module('MyApp')
-  .controller('NavbarCtrl', function($scope, Auth) {
+  .controller('NavbarCtrl', ['$scope', 'Auth', function($scope, Auth) {
     $scope.logout = function() {
       Auth.logout();
     };
-  });
+  }]);
