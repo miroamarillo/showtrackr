@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .directive('uniqueEmail', function($http) {
+  .directive('uniqueEmail', ['$http', function($http) {
     return {
       restrict: 'A',
       require: 'ngModel',
@@ -16,4 +16,4 @@ angular.module('MyApp')
         });
       }
     };
-  });
+  }]);
