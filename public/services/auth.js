@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .factory('Auth', function($http, $location, $rootScope, $alert, $window) {
+  .factory('Auth', [ '$http', '$location', '$rootScope', '$alert', '$window', function($http, $location, $rootScope, $alert, $window) {
     var token = $window.localStorage.token;
     if (token) {
       var payload = JSON.parse($window.atob(token.split('.')[1]));
@@ -148,4 +148,4 @@ angular.module('MyApp')
         });
       }
     };
-  });
+  }]);
