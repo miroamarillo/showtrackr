@@ -1,5 +1,5 @@
 angular.module('MyApp', ['ngResource', 'ngMessages', 'ngRoute', 'ngAnimate', 'mgcrea.ngStrap'])
-  .config(function ($routeProvider, $locationProvider) {
+  .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
 
     $routeProvider
@@ -26,7 +26,7 @@ angular.module('MyApp', ['ngResource', 'ngMessages', 'ngRoute', 'ngAnimate', 'mg
       .otherwise({
         redirectTo: '/'
       });
-  })
+  }])
   .config(function ($httpProvider) {
     $httpProvider.interceptors.push(function ($rootScope, $q, $window, $location) {
       return {
