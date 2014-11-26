@@ -7,7 +7,7 @@ var concat = require('gulp-concat');
 var plumber = require('gulp-plumber');
 
 var templateCache = require('gulp-angular-templatecache');
-
+// Sass process
 gulp.task('sass', function() {
   gulp.src('public/stylesheets/style.scss')
     .pipe(plumber())
@@ -15,7 +15,7 @@ gulp.task('sass', function() {
     .pipe(csso())
     .pipe(gulp.dest('public/stylesheets'));
 });
-
+// Compress process
 gulp.task('compress', function() {
   gulp.src([
     'public/vendor/angular.js',
