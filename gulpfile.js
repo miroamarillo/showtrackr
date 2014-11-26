@@ -37,7 +37,7 @@ gulp.task('templates', function() {
     .pipe(templateCache({ root: 'views', module: 'MyApp' }))
     .pipe(gulp.dest('public'));
 });
-
+//Watchers
 gulp.task('watch', function() {
   gulp.watch('public/stylesheets/*.scss', ['sass']);
   gulp.watch('public/views/**/*.html', ['templates']);
